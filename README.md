@@ -171,12 +171,9 @@ The app supports:
 
 | Name | Institution |
 |---|---|
+| **Prajakta Kuila** | KIIT Deemed to be University |
 | Amiya Ranjan Panda | KIIT Deemed to be University |
 | **Swaraj Kumar Behera** | KIIT Deemed to be University |
-| **Prajakta Kuila** | KIIT Deemed to be University |
-| Vidya Mohanty | Aryan Institute of Engineering and Technology |
-| Subhashree Mishra | KIIT Deemed to be University |
-| Manoj Kumar Mishra | KIIT Deemed to be University |
 
 ---
 
