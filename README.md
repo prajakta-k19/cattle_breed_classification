@@ -6,13 +6,15 @@
 [![IEEE](https://img.shields.io/badge/IEEE-Published-blue)](https://ieeexplore.ieee.org/document/11496187)
 [![Accuracy](https://img.shields.io/badge/Accuracy-92.5%25-brightgreen)]()
 [![Breeds](https://img.shields.io/badge/Breeds-64-orange)]()
-[![Python](https://img.shields.io/badge/Python-3.x-yellow)]()
+[![Python](https://img.shields.io/badge/Python-3.10+-yellow?logo=python)](https://python.org)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.14+-orange?logo=tensorflow)](https://tensorflow.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.24+-red?logo=streamlit)](https://streamlit.io)
 
 ---
 
 ## Overview
 
-This project presents a deep learning system for automatically classifying **64 Indian cow and buffalo breeds** from images using a custom-designed Convolutional Neural Network (CNN). The model achieves **92.5% overall accuracy** and outperforms established architectures including ResNet50, VGG16, DenseNet121, MobileNetV2, and EfficientNetB0.
+An end-to-end deep learning system that classifies **64 Indian cow and buffalo breeds** from images using a custom-built Convolutional Neural Network (CNN). The model achieves **92.5% overall accuracy** on the validation set, outperforming ResNet50, VGG16, DenseNet121, MobileNetV2, and EfficientNetB0, and is deployed as a Streamlit web application with Google OAuth login.
 
 Accurate breed identification is critical for precision livestock management — enabling selective breeding, health monitoring, and dairy yield prediction. Conventional manual inspection is labor-intensive and error-prone; this system automates that process end-to-end.
 
@@ -27,6 +29,8 @@ Accurate breed identification is critical for precision livestock management —
 | Weighted Recall | 0.931 |
 | Weighted F1-Score | **0.929** |
 | Specificity | 0.941 |
+| No. of Breeds | 64 |
+| Dataset Size | ~8,700 images (after preprocessing) |
 
 ### Comparison with Pretrained Architectures
 
@@ -41,35 +45,62 @@ Accurate breed identification is critical for precision livestock management —
 
 ---
 
-## Dataset
-
-- **9,200 high-quality images** across 64 Indian cattle breeds (e.g., Gir, Sahiwal, Murrah, Jafarabadi)
-- Sources: ICAR-NDRI, DAHD, Kaggle Cattle Breeds dataset, Dairy DigiD, and field-level farm photographs from Odisha
-- **3x augmentation** applied — random rotation, flipping, brightness/saturation adjustments, zoom, shear, and Gaussian noise injection
-- Images collected across varied lighting, pose, and background conditions for real-world generalization
-
----
-
 ## Model Architecture
 
-Custom 5-block CNN built from scratch, optimized for livestock visual features:
+Custom CNN with **5 convolutional blocks** followed by dense layers:
 
-- **Conv Blocks**: 5 blocks with 32 → 64 → 128 → 256 → 512 filters, ReLU activation, 2×2 max pooling
+```
+Input (128×128×3)
+  → Conv2D(32) + MaxPool
+  → Conv2D(64) + MaxPool
+  → Conv2D(128) + MaxPool
+  → Conv2D(256) + MaxPool
+  → Conv2D(512) + MaxPool
+  → Dense(512) + Dropout(0.5)
+  → Dense(256) + Dropout(0.5)
+  → Dense(64, softmax)
+```
+
 - **Regularization**: Dropout (rate = 0.5) after each dense layer to prevent overfitting
-- **Output Layer**: 64 neurons with softmax activation (one per breed class)
 - **Training**: Adam optimizer, categorical cross-entropy loss, learning rate 0.001, 100 epochs, batch size 32, early stopping
 
 ---
 
-## Methodology
+## Repository Structure
 
-1. **Data Collection** — Curated from government databases, open datasets, and rural farm photography
-2. **EDA** — Breed distribution analysis, image quality checks, visual feature study
-3. **Preprocessing** — Resizing to 224×224, normalization, noise reduction, histogram equalization, center cropping
-4. **Augmentation** — 3x dataset expansion via rotation, flipping, brightness, zoom, shear, Gaussian noise
-5. **Model Training** — Custom CNN trained on GPU with early stopping and LR reduction callbacks
-6. **Evaluation** — Accuracy, Precision, Recall, F1-Score, Specificity, Confusion Matrix
-7. **Interpretability** — Grad-CAM heatmaps validating model focus on breed-discriminative features
+```
+cattle_breed_classification/
+├── AI_Breed_Classification_Complete.ipynb  # Full pipeline: preprocessing → training → export
+├── app.py                                  # Streamlit web application
+├── requirements.txt                        # Python dependencies
+├── models/                                 # Saved model files
+│   ├── animal_classifier_savedmodel/       # TF SavedModel (used by app.py)
+│   └── model.json                          # Class index → breed name mapping
+└── .devcontainer/                          # GitHub Codespaces config
+```
+
+---
+
+## Pipeline
+
+| Phase | Description |
+|---|---|
+| **1 — Setup** | Mount Drive, install dependencies, define unified paths |
+| **2 — Dataset Organization** | Flatten `species/breed` folders, 80/10/10 train/val/test split |
+| **3 — Preprocessing** | Duplicate removal (imagehash), blur detection (OpenCV), corrupt image cleanup |
+| **4 — Augmentation** | Flip, rotate, zoom, brightness & contrast variation (3× effective dataset size) |
+| **5 — Model Training** | 5-block Custom CNN, 100 epochs, Adam optimizer, early stopping |
+| **6 — Evaluation** | Confusion matrix, classification report, Grad-CAM visualizations |
+| **7 — Export** | `.keras` model, TF SavedModel, `model.json` class mapping |
+
+---
+
+## Dataset
+
+- **~9,200 raw images** → 8,700 after preprocessing, across 64 Indian cattle breeds (e.g., Gir, Sahiwal, Murrah, Jafarabadi)
+- Sources: ICAR-NDRI, DAHD, Kaggle Cattle Breeds dataset, Dairy DigiD, and field-level farm photographs from Odisha
+- **3x augmentation** applied — random rotation, flipping, brightness/saturation adjustments, zoom, shear, and Gaussian noise injection
+- Images collected across varied lighting, pose, and background conditions for real-world generalization
 
 ---
 
@@ -86,16 +117,17 @@ Misclassifications were primarily limited to visually similar or rare breeds (e.
 
 ## Tech Stack
 
-- **Language**: Python 3.x
+- **Language**: Python 3.10+
 - **Deep Learning**: TensorFlow, Keras
-- **Image Processing**: Pillow (PIL)
-- **Data Handling**: NumPy, Pandas
-- **Visualization**: Matplotlib
-- **App Interface**: Streamlit (`app.py`)
+- **Image Processing**: OpenCV, Pillow (PIL), imagehash
+- **Data Handling**: NumPy, Pandas, Scikit-learn
+- **Visualization**: Matplotlib, Seaborn
+- **App Interface**: Streamlit, SQLite
+- **Auth**: Google OAuth 2.0
 
 ---
 
-## How to Run
+## Running the App
 
 ```bash
 # Clone the repository
@@ -108,6 +140,13 @@ pip install -r requirements.txt
 # Run the Streamlit app
 streamlit run app.py
 ```
+
+The app supports:
+- Image upload (JPG, PNG, JPEG)
+- Live camera capture
+- Google OAuth + email/password login
+- Top-3 breed predictions with confidence scores
+- Prediction history per session
 
 ---
 
@@ -130,6 +169,17 @@ streamlit run app.py
 
 ## Authors
 
-- **Prajakta Kuila** — KIIT Deemed to be University
-- **Swaraj Kumar Behera** — KIIT Deemed to be University
-- Amiya Ranjan Panda, Vidya Mohanty, Subhashree Mishra, Manoj Kumar Mishra
+| Name | Institution |
+|---|---|
+| Amiya Ranjan Panda | KIIT Deemed to be University |
+| **Swaraj Kumar Behera** | KIIT Deemed to be University |
+| **Prajakta Kuila** | KIIT Deemed to be University |
+| Vidya Mohanty | Aryan Institute of Engineering and Technology |
+| Subhashree Mishra | KIIT Deemed to be University |
+| Manoj Kumar Mishra | KIIT Deemed to be University |
+
+---
+
+## License
+
+This project is licensed under the MIT License.
