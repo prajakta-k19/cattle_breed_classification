@@ -1,108 +1,135 @@
-# 🐄🐃 Animal Breed Classification using Deep Learning
+# AI-Based Cow & Buffalo Breed Classification Using Custom CNN
 
-## 📌 Overview
+> **Published Research** — 2026 IEEE International Conference  
+> Co-authored by Prajakta Kuila, Swaraj Kumar Behera, Amiya Ranjan Panda et al., KIIT Deemed to be University
 
-This project focuses on building a **Computer Vision model** to classify different animal breeds using deep learning techniques. The system leverages **Convolutional Neural Networks (CNNs)** to automatically learn visual features from images and accurately predict the breed category. CNNs are widely used for image classification because they can automatically extract spatial features and patterns from images ([Wikipedia][1]).
-
----
-
-## 🎯 Objective
-
-* Classify animal breeds from input images
-* Build a scalable deep learning pipeline for multi-class classification
-* Improve accuracy using data preprocessing and model optimization techniques
+[![IEEE](https://img.shields.io/badge/IEEE-Published-blue)](https://ieeexplore.ieee.org/document/11496187)
+[![Accuracy](https://img.shields.io/badge/Accuracy-92.5%25-brightgreen)]()
+[![Breeds](https://img.shields.io/badge/Breeds-64-orange)]()
+[![Python](https://img.shields.io/badge/Python-3.x-yellow)]()
 
 ---
 
-## 🧠 Methodology
+## Overview
 
-* Performed **image preprocessing** (resizing, normalization, augmentation)
-* Used a **CNN-based architecture** for feature extraction
-* Trained the model on labeled animal image datasets
-* Evaluated performance using accuracy and validation metrics
+This project presents a deep learning system for automatically classifying **64 Indian cow and buffalo breeds** from images using a custom-designed Convolutional Neural Network (CNN). The model achieves **92.5% overall accuracy** and outperforms established architectures including ResNet50, VGG16, DenseNet121, MobileNetV2, and EfficientNetB0.
 
-Deep learning-based animal classification systems are commonly trained on large labeled datasets and use CNN architectures to distinguish subtle visual differences between classes ([GitHub][2]).
+Accurate breed identification is critical for precision livestock management — enabling selective breeding, health monitoring, and dairy yield prediction. Conventional manual inspection is labor-intensive and error-prone; this system automates that process end-to-end.
 
 ---
 
-## 📊 Dataset
+## Key Results
 
-* Consists of labeled images of different animal breeds
-* Includes multiple classes with variations in lighting, pose, and background
-* Data augmentation techniques applied to improve generalization
+| Metric | Value |
+|---|---|
+| Overall Accuracy | **92.5%** |
+| Weighted Precision | 0.928 |
+| Weighted Recall | 0.931 |
+| Weighted F1-Score | **0.929** |
+| Specificity | 0.941 |
 
----
+### Comparison with Pretrained Architectures
 
-## ⚙️ Tech Stack
-
-* Python
-* TensorFlow / Keras
-* NumPy, Pandas
-* OpenCV
-* Matplotlib
-
----
-
-## 🚀 Features
-
-* Multi-class image classification
-* End-to-end training pipeline
-* Model evaluation and prediction
-* Scalable for real-world applications
+| Model | Accuracy | F1-Score |
+|---|---|---|
+| VGG16 | 0.852 | 0.84 |
+| ResNet50 | 0.887 | 0.88 |
+| DenseNet121 | 0.895 | 0.89 |
+| MobileNetV2 | 0.901 | 0.90 |
+| EfficientNetB0 | 0.912 | 0.91 |
+| **Custom CNN (Ours)** | **0.925** | **0.929** |
 
 ---
 
-## 📈 Results
+## Dataset
 
-* Achieved strong classification performance on test data
-* Model demonstrates good generalization across unseen images
-* Capable of distinguishing visually similar breeds
-
----
-
-## 🔮 Future Improvements
-
-* Use **transfer learning (ResNet, EfficientNet)** for higher accuracy
-* Deploy as a **web application (Flask/Streamlit)**
-* Optimize model for real-time predictions
-* Increase dataset size for better robustness
+- **9,200 high-quality images** across 64 Indian cattle breeds (e.g., Gir, Sahiwal, Murrah, Jafarabadi)
+- Sources: ICAR-NDRI, DAHD, Kaggle Cattle Breeds dataset, Dairy DigiD, and field-level farm photographs from Odisha
+- **3x augmentation** applied — random rotation, flipping, brightness/saturation adjustments, zoom, shear, and Gaussian noise injection
+- Images collected across varied lighting, pose, and background conditions for real-world generalization
 
 ---
 
-## 💡 Applications
+## Model Architecture
 
-* Wildlife monitoring
-* Agriculture & livestock management
-* Animal research and classification systems
+Custom 5-block CNN built from scratch, optimized for livestock visual features:
+
+- **Conv Blocks**: 5 blocks with 32 → 64 → 128 → 256 → 512 filters, ReLU activation, 2×2 max pooling
+- **Regularization**: Dropout (rate = 0.5) after each dense layer to prevent overfitting
+- **Output Layer**: 64 neurons with softmax activation (one per breed class)
+- **Training**: Adam optimizer, categorical cross-entropy loss, learning rate 0.001, 100 epochs, batch size 32, early stopping
 
 ---
 
-## 📂 How to Run
+## Methodology
+
+1. **Data Collection** — Curated from government databases, open datasets, and rural farm photography
+2. **EDA** — Breed distribution analysis, image quality checks, visual feature study
+3. **Preprocessing** — Resizing to 224×224, normalization, noise reduction, histogram equalization, center cropping
+4. **Augmentation** — 3x dataset expansion via rotation, flipping, brightness, zoom, shear, Gaussian noise
+5. **Model Training** — Custom CNN trained on GPU with early stopping and LR reduction callbacks
+6. **Evaluation** — Accuracy, Precision, Recall, F1-Score, Specificity, Confusion Matrix
+7. **Interpretability** — Grad-CAM heatmaps validating model focus on breed-discriminative features
+
+---
+
+## Interpretability — Grad-CAM
+
+Grad-CAM visualizations confirmed the model correctly focuses on breed-specific features:
+- Horn curvature and orientation
+- Coat patterns and markings
+- Facial structure and ear shape
+
+Misclassifications were primarily limited to visually similar or rare breeds (e.g., Punganur and Toda) due to limited training samples.
+
+---
+
+## Tech Stack
+
+- **Language**: Python 3.x
+- **Deep Learning**: TensorFlow, Keras
+- **Image Processing**: Pillow (PIL)
+- **Data Handling**: NumPy, Pandas
+- **Visualization**: Matplotlib
+- **App Interface**: Streamlit (`app.py`)
+
+---
+
+## How to Run
 
 ```bash
 # Clone the repository
-git clone https://github.com/swaraj3092/animal_breed_classification
-
-# Navigate to project folder
-cd animal_breed_classification
+git clone https://github.com/prajakta-k19/cattle_breed_classification
+cd cattle_breed_classification
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the model
-python main.py
+# Run the Streamlit app
+streamlit run app.py
 ```
 
 ---
 
-## 👤 Author
+## Applications
 
-* Swaraj
-* Prajakta
-* Contributions & improvements welcome
+- Precision livestock management and selective breeding
+- Automated dairy farm monitoring
+- Veterinary health tracking and yield prediction
+- Integration with IoT devices for real-time edge inference
 
 ---
 
-## ⭐ If you like this project
+## Publication
 
-Give it a star ⭐ and feel free to contribute!
+> Amiya Ranjan Panda, Swaraj Kumar Behera, **Prajakta Kuila**, Vidya Mohanty, Subhashree Mishra, Manoj Kumar Mishra.  
+> *"AI-Based Cow & Buffalo Breed Classification Using Custom CNN"*  
+> 2026 IEEE International Conference — [View on IEEE Xplore](https://ieeexplore.ieee.org/document/11496187)
+
+---
+
+## Authors
+
+- **Prajakta Kuila** — KIIT Deemed to be University
+- **Swaraj Kumar Behera** — KIIT Deemed to be University
+- Amiya Ranjan Panda, Vidya Mohanty, Subhashree Mishra, Manoj Kumar Mishra
