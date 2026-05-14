@@ -1,108 +1,143 @@
-# 🐄🐃 Animal Breed Classification using Deep Learning
+# 🐄🐃 AI-Based Cow & Buffalo Breed Classification Using Custom CNN
+
+[![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://python.org)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.14+-orange?logo=tensorflow)](https://tensorflow.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.24+-red?logo=streamlit)](https://streamlit.io)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+> Research paper implementation — *AI-Based Cow & Buffalo Breed Classification Using Custom CNN*  
+> KIIT Deemed to be University, Bhubaneswar, India
+
+---
 
 ## 📌 Overview
 
-This project focuses on building a **Computer Vision model** to classify different animal breeds using deep learning techniques. The system leverages **Convolutional Neural Networks (CNNs)** to automatically learn visual features from images and accurately predict the breed category. CNNs are widely used for image classification because they can automatically extract spatial features and patterns from images ([Wikipedia][1]).
+An end-to-end deep learning system that classifies **64 Indian cow and buffalo breeds** from images using a custom-built Convolutional Neural Network (CNN). The system achieves **92.5% accuracy** on the validation set and is deployed as a Streamlit web application with Google OAuth login.
 
 ---
 
-## 🎯 Objective
+## 🎯 Key Results
 
-* Classify animal breeds from input images
-* Build a scalable deep learning pipeline for multi-class classification
-* Improve accuracy using data preprocessing and model optimization techniques
-
----
-
-## 🧠 Methodology
-
-* Performed **image preprocessing** (resizing, normalization, augmentation)
-* Used a **CNN-based architecture** for feature extraction
-* Trained the model on labeled animal image datasets
-* Evaluated performance using accuracy and validation metrics
-
-Deep learning-based animal classification systems are commonly trained on large labeled datasets and use CNN architectures to distinguish subtle visual differences between classes ([GitHub][2]).
+| Metric | Value |
+|--------|-------|
+| Overall Accuracy | **92.5%** |
+| Weighted Precision | 0.928 |
+| Weighted Recall | 0.931 |
+| Weighted F1-Score | 0.929 |
+| Specificity | 0.941 |
+| No. of Breeds | 64 |
+| Dataset Size | ~8,700 images (after preprocessing) |
 
 ---
 
-## 📊 Dataset
+## 🧠 Model Architecture
 
-* Consists of labeled images of different animal breeds
-* Includes multiple classes with variations in lighting, pose, and background
-* Data augmentation techniques applied to improve generalization
+Custom CNN with **5 convolutional blocks** followed by dense layers:
 
----
+```
+Input (128×128×3)
+  → Conv2D(32) + MaxPool
+  → Conv2D(64) + MaxPool
+  → Conv2D(128) + MaxPool
+  → Conv2D(256) + MaxPool
+  → Conv2D(512) + MaxPool
+  → Dense(512) + Dropout(0.5)
+  → Dense(256) + Dropout(0.5)
+  → Dense(64, softmax)
+```
 
-## ⚙️ Tech Stack
-
-* Python
-* TensorFlow / Keras
-* NumPy, Pandas
-* OpenCV
-* Matplotlib
-
----
-
-## 🚀 Features
-
-* Multi-class image classification
-* End-to-end training pipeline
-* Model evaluation and prediction
-* Scalable for real-world applications
+Outperforms VGG16, ResNet50, DenseNet121, MobileNetV2, and EfficientNetB0 on this dataset.
 
 ---
 
-## 📈 Results
+## 📂 Repository Structure
 
-* Achieved strong classification performance on test data
-* Model demonstrates good generalization across unseen images
-* Capable of distinguishing visually similar breeds
-
----
-
-## 🔮 Future Improvements
-
-* Use **transfer learning (ResNet, EfficientNet)** for higher accuracy
-* Deploy as a **web application (Flask/Streamlit)**
-* Optimize model for real-time predictions
-* Increase dataset size for better robustness
+```
+animal_breed_classification/
+├── AI_Breed_Classification_Complete.ipynb  # Full pipeline: preprocessing → training → export
+├── app.py                                  # Streamlit web application
+├── requirements.txt                        # Python dependencies
+├── models/                                 # Saved model files
+│   ├── animal_classifier_savedmodel/       # TF SavedModel (used by app.py)
+│   └── model.json                          # Class index → breed name mapping
+└── .devcontainer/                          # GitHub Codespaces config
+```
 
 ---
 
-## 💡 Applications
+## ⚙️ Pipeline (`AI_Breed_Classification_Complete.ipynb`)
 
-* Wildlife monitoring
-* Agriculture & livestock management
-* Animal research and classification systems
+| Phase | Description |
+|-------|-------------|
+| **1 — Setup** | Mount Drive, install dependencies, define unified paths |
+| **2 — Dataset Organization** | Flatten `species/breed` folders, 80/10/10 train/val/test split |
+| **3 — Preprocessing** | Duplicate removal (imagehash), blur detection (OpenCV), corrupt image cleanup |
+| **4 — Augmentation** | Flip, rotate, zoom, brightness & contrast variation (3× effective dataset size) |
+| **5 — Model Training** | 5-block Custom CNN, 100 epochs, Adam optimizer, early stopping |
+| **6 — Evaluation** | Confusion matrix, classification report, Grad-CAM visualizations |
+| **7 — Export** | `.keras` model, TF SavedModel, `model.json` class mapping |
 
 ---
 
-## 📂 How to Run
+## 🚀 Running the App
 
 ```bash
 # Clone the repository
-git clone https://github.com/swaraj3092/animal_breed_classification
-
-# Navigate to project folder
+git clone https://github.com/swaraj3092/animal_breed_classification.git
 cd animal_breed_classification
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the model
-python main.py
+# Run the Streamlit app
+streamlit run app.py
 ```
 
+The app supports:
+- 📁 Image upload (JPG, PNG, JPEG)
+- 📸 Live camera capture
+- 🔐 Google OAuth + email/password login
+- 📊 Top-3 breed predictions with confidence scores
+- 🕓 Prediction history per session
+
 ---
 
-## 👤 Author
+## 🛠️ Tech Stack
 
-* Swaraj
-* Prajakta
-* Contributions & improvements welcome
+- **Model:** TensorFlow / Keras
+- **Preprocessing:** OpenCV, Pillow, imagehash
+- **App:** Streamlit, SQLite
+- **Auth:** Google OAuth 2.0
+- **Data:** NumPy, Pandas, Matplotlib, Seaborn, scikit-learn
 
 ---
 
-## ⭐ If you like this project
+## 📊 Dataset
 
-Give it a star ⭐ and feel free to contribute!
+- ~9,200 raw images → **8,700 after preprocessing**
+- **64 breeds** (e.g., Gir, Sahiwal, Murrah, Jafarabadi, Punganur, Toda, Hariana, etc.)
+- Sources: ICAR-NDRI, DAHD, Kaggle Cattle Breeds, Dairy DigiD, Google Open Images, field photographs from Odisha
+- Augmented to ~3× original size for training robustness
+
+---
+
+## 👥 Authors
+
+| Name | Institution |
+|------|------------|
+| Amiya Ranjan Panda | KIIT University |
+| **Swaraj Kumar Behera** | KIIT University |
+| Prajakta Kuila | KIIT University |
+| Vidya Mohanty | Aryan Institute of Engineering and Technology |
+| Subhashree Mishra | KIIT University |
+| Manoj Kumar Mishra | KIIT University |
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+⭐ If you find this project useful, give it a star!
